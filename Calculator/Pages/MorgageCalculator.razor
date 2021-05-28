@@ -1,0 +1,79 @@
+﻿@page "/morgagecalculator"
+
+
+<div class="card">
+    <div class="header">
+        <h1>Morgage Calculator</h1>
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <label for="enterPrinciple">Principle Amount</label>
+            <input id="enterPrinciple" class="form-control" aria-describedby="enterPrincipleHelp" placeholder="Enter Principle" @bind="@principle" />
+            <small id="enterPrincipleHelp" class="form-text text-muted">Enter the princple amount. e.g. 100000</small>
+        </div>
+        <div class="form-group">
+            <label for="enterPrinciple">Deposite </label>
+            <input id="enterPrinciple" class="form-control" aria-describedby="enterPrincipleHelp" placeholder="Enter Deposite percentage" @bind="@deposite" />
+            <small id="enterPrincipleHelp" class="form-text text-muted">Enter the Deposite percentage. e.g. 5%</small>
+        </div>
+        
+         <div class="form-group">
+            <label for="enterInterest">Interest Rate</label>
+            <input id="enterInterest" class="form-control" aria-describedby="enterInterestHelp" placeholder="Enter the interest rate" @bind="@rate" />
+            <small id="enterInterestHelp" class="form-text text-muted">Enter the interest rate. e.g.  3.75</small>
+        </div>
+        <div class="form-group">
+            <label for="enterDuration">Term (Years)</label>
+            <select class="form-control" aria-describedby="enterDurationHelp" id="enterDuration" @bind="@year">
+                @for (int i = 1; i <= 30; i++)
+                {
+                    <option>@i</option>
+                }
+            </select>
+            <small id="enterDurationHelp" class="form-text text-muted">Select the duration of the loan (in years).</small>
+        </div>
+        <button class="btn btn-primary" @onclick="@Calculate">Calculate</button>
+        <br />
+        <br />
+        <div class="alert alert-secondary" role="alert">
+            Your deposite payment will be: <strong>£ @Deposite.ToString("0.00") </strong><br />
+
+            Your monthly payment will be: <strong>£ @month.ToString("0.00") </strong><br />
+            Your total payment will be: <strong>£ @total.ToString("0.00") </strong><br />
+            Total interest payment will be: <strong>£ @TotalInterest.ToString("0.00") </strong><br />
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    public double principle { get; set;}
+    public double deposite { get; set;}
+
+    public double rate { get; set;}
+    public int year{ get; set;}
+    public double month;
+    public double total;
+
+    public double Deposite;
+    public double TotalInterest;
+
+   void Calculate()
+    {
+        double r = rate / 100;
+        double monthlyRate = r / 12;
+        double payments = 12 * year;
+        
+        Deposite = (principle * deposite) / 100;
+        month = (principle - Deposite) * (monthlyRate * Math.Pow(1 + monthlyRate, payments)) / (Math.Pow(1 + monthlyRate, payments) - 1);
+        total = (month * year * 12)+Deposite;
+
+        TotalInterest =total - principle;
+    }
+
+   }
